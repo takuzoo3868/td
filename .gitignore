@@ -52,7 +52,6 @@ Mkfile.old
 dkms.conf
 
 ### CMake
-CMakeLists.txt
 CMakeScripts
 Testing
 install_manifest.txt
