@@ -65,6 +65,3 @@ CTestTestfile.cmake
 out
 gen
 cmake-build-debug/
-
-### project files
-takdit
