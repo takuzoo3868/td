@@ -1,5 +1,5 @@
 takdit: takdit.c
-	$(CC) takdit.c -o takdit -Wall -Wextra -pedantic -std=c99
+	$(CC) -o takdit takdit.c -Wall -W -pedantic -std=c99
 
 clean:
 	rm takdit
