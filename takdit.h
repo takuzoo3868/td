@@ -5,6 +5,10 @@
 #define TAKDIT_TAB_STOP 8
 #define TAKDIT_QUIT_TIMES 3
 
+#define _DEFAULT_SOURCE
+#define _BSD_SOURCE
+#define _GNU_SOURCE
+
 #include <termios.h>
 #include <stdlib.h>
 #include <stdio.h>
