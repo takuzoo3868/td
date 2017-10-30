@@ -3,6 +3,7 @@
 
 #define TAKDIT_VERSION "0.0.2"
 #define TAKDIT_TAB_STOP 8
+#define TAKDIT_QUIT_TIMES 3
 
 #include <termios.h>
 #include <stdlib.h>
