@@ -24,6 +24,10 @@ typedef struct erow {
     int hl_open_comment;
 } erow;
 
+typedef struct hlcolor {
+    int r, g, b;
+} hlcolor;
+
 struct editorConfig {
     int cx, cy;
     int rx;
@@ -244,7 +248,7 @@ int getWindowSize(int ifd, int ofd, int *rows, int *cols) {
 /*** syntax highlighting ***/
 
 int is_separator(int c) {
-    return isspace(c) || c == '\0' || strchr(",.()+-/*=~%<>[];", c) != NULL;
+    return c == '\0' || isspace(c) || strchr(",.()+-/*=~%[];", c) != NULL;
 }
 
 void editorUpdateSyntax(erow *row) {
@@ -380,28 +384,18 @@ int editorSyntaxToColor(int hl) {
     }
 }
 
-void editorSelectSyntaxHighlight() {
-    E.syntax = NULL;
-    if (E.filename == NULL) return;
-
-    char *ext = strrchr(E.filename, '.');
-
+void editorSelectSyntaxHighlight(char *filename) {
     for (unsigned int j = 0; j < HLDB_ENTRIES; j++) {
-        struct editorSyntax *s = &HLDB[j];
+        struct editorSyntax *s = HLDB + j;
         unsigned int i = 0;
-
         while (s->filematch[i]) {
-            int is_ext = (s->filematch[i][0] == '.');
-            if ((is_ext && ext && !strcmp(ext, s->filematch[i])) ||
-                (!is_ext && strstr(E.filename, s->filematch[i]))) {
-                E.syntax = s;
-
-                int filerow;
-                for (filerow = 0; filerow < E.numrows; filerow++) {
-                    editorUpdateSyntax(&E.row[filerow]);
+            char *p;
+            int patlen = strlen(s->filematch[i]);
+            if ((p = strstr(filename, s->filematch[i])) != NULL) {
+                if (s->filematch[i][0] != '.' || p[patlen] == '\0') {
+                    E.syntax = s;
+                    return;
                 }
-
-                return;
             }
             i++;
         }
@@ -615,34 +609,28 @@ int editorOpen(char *filename) {
     return 0;
 }
 
-void editorSave() {
-    if (E.filename == NULL) {
-        E.filename = editorPrompt("Save as: %s (ESC to cancel)", NULL);
-        if (E.filename == NULL) {
-            editorSetStatusMessage("Save aborted");
-            return;
-        }
-        editorSelectSyntaxHighlight();
-    }
-
+int editorSave(void) {
     int len;
     char *buf = editorRowsToString(&len);
     int fd = open(E.filename, O_RDWR | O_CREAT, 0644);
-    if (fd != -1) {
-        if (ftruncate(fd, len) != -1) {
-            if (write(fd, buf, len) == len) {
-                close(fd);
-                free(buf);
-                E.dirty = 0;
-                editorSetStatusMessage("%d bytes written to disk", len);
-                return;
-            }
-        }
-        close(fd);
-    }
+    if (fd == -1) goto writeerr;
+
+    if (ftruncate(fd, len) == -1) goto writeerr;
+    if (write(fd, buf, len) != len) goto writeerr;
+
+    close(fd);
     free(buf);
+    E.dirty = 0;
+    editorSetStatusMessage("%d bytes written on disk", len);
+    return 0;
+
+    writeerr:
+    free(buf);
+    if (fd != -1) close(fd);
     editorSetStatusMessage("Can't save! I/O error: %s", strerror(errno));
+    return 1;
 }
+
 
 /*** find ***/
 
@@ -1057,7 +1045,7 @@ void initEditor() {
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
-        fprintf(stderr,"Usage: takdit <filename>\n");
+        fprintf(stderr, "Usage: takdit <filename>\n");
         exit(1);
     }
 
