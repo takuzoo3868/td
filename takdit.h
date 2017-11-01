@@ -2,10 +2,7 @@
 #define _TAKDIT_H
 
 #define TAKDIT_VERSION "0.0.3"
-#define TAKDIT_TAB_STOP 8
-#define TAKDIT_QUIT_TIMES 3
 
-#define _DEFAULT_SOURCE
 #define _BSD_SOURCE
 #define _GNU_SOURCE
 
@@ -25,20 +22,59 @@
 #include <pwd.h>
 #include <assert.h>
 
+#include "modules/syntax/syntax.h"
+
+#define EDIT_MODE 0
+#define SELECTION_MODE 1
+#define NORMAL_MODE 2
+
+typedef struct erow {
+    int idx;
+    int size;
+    int rsize;
+    char *chars;
+    char *render;
+    unsigned char *hl;
+    int hl_oc;
+} erow;
+
+typedef struct colourMap {
+    int hl_comment_colour;
+    int hl_mlcomment_colour;
+    int hl_keyword_cond_colour;
+    int hl_keyword_type_colour;
+    int hl_keyword_pp_colour;
+    int hl_keyword_return_colour;
+    int hl_keyword_adapter_colour;
+    int hl_keyword_loop_colour;
+    int hl_string_colour;
+    int hl_number_colour;
+    int hl_match_colour;
+    int hl_background_colour;
+    int hl_default_colour;
+} colourMap;
+
+// configuration structure for the editor
+struct editorConfig {
+    int cx, cy;
+    int rx;
+    int rowoff;
+    int coloff;
+    int screenrows;
+    int screencols;
+    int numrows;
+    int rawmode;
+    erow *row;
+    int dirty;
+    char *filename;
+    colourMap colours;
+    char statusmsg[80];
+    time_t statusmsg_time;
+    struct editorSyntax *syntax;
+    struct termios orig_termios;
+};
+
 #define CTRL_KEY(k) ((k) & 0x1f)
-
-#define HL_NORMAL 0
-#define HL_NONPRINT 1
-#define HL_COMMENT 2
-#define HL_MLCOMMENT 3
-#define HL_KEYWORD1 4
-#define HL_KEYWORD2 5
-#define HL_STRING 6
-#define HL_NUMBER 7
-#define HL_MATCH 8
-
-#define HL_HIGHLIGHT_NUMBERS (1<<0)
-#define HL_HIGHLIGHT_STRINGS (1<<1)
 
 enum KEY_ACTION {
     KEY_NULL = 0,       /* NULL */
@@ -65,5 +101,7 @@ enum KEY_ACTION {
     PAGE_UP,
     PAGE_DOWN
 };
+
+void editorSetStatusMessage(const char *fmt, ...);
 
 #endif
