@@ -36,3 +36,5 @@ char *CCPP_keywords[] = {
     "*/", \
     HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS \
 }
+
+#endif

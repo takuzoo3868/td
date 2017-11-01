@@ -1,8 +1,9 @@
 #ifndef _SYNTAX_STANDARD_H
 #define _SYNTAX_STANDARD_H
 
-#include "editor_syntax.h"
+#include "editorSyntax.h"
 #include "ccpp/ccpp.h"
+#include "python/python.h"
 
 // Syntax highlighting macros
 #define HL_NORMAL 0
@@ -23,16 +24,16 @@
 #define HL_HIGHLIGHT_STRINGS (1<<0)
 #define HL_HIGHLIGHT_NUMBERS (1<<1)
 
-
 typedef struct hlcolour {
     int r, g, b;
 } hlcolour;
 
 // here is an array of syntax highlights by extensions, keywords, comments, del
-struct editor_syntax highlight_db[] = {
+struct editorSyntax HLDB[] = {
         CCPP_syntax,
+        Python_syntax
 };
 
-#define HIGHLIGHT_DB_ENTRIES (sizeof(highlight_db)/sizeof(highlight_db[0]))
+#define HLDB_ENTRIES (sizeof(HLDB) / sizeof(HLDB[0]))
 
 #endif
