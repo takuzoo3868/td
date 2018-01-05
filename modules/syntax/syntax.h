@@ -2,6 +2,7 @@
 #define _SYNTAX_STANDARD_H
 
 #include "editorSyntax.h"
+#include "brain/brain.h"
 #include "ccpp/ccpp.h"
 #include "python/python.h"
 
@@ -30,8 +31,9 @@ typedef struct hlcolour {
 
 // here is an array of syntax highlights by extensions, keywords, comments, del
 struct editorSyntax HLDB[] = {
+        BRAIN_syntax,
         CCPP_syntax,
-        Python_syntax
+        PYTHON_syntax,
 };
 
 #define HLDB_ENTRIES (sizeof(HLDB) / sizeof(HLDB[0]))

@@ -63,3 +63,4 @@ CTestTestfile.cmake
 out
 gen
 cmake-build-debug/
+TEST_CODE

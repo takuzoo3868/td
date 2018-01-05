@@ -29,11 +29,11 @@ char *CCPP_keywords[] = {
 };
 
 #define CCPP_syntax { \
-    CCPP_extensions, \
-    CCPP_keywords, \
-    "//", \
-    "/*", \
-    "*/", \
+    CCPP_extensions,  \
+    CCPP_keywords,    \
+    "//",             \
+    "/*",             \
+    "*/",             \
     HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS \
 }
 

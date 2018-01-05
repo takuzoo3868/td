@@ -23,12 +23,12 @@ char *Python_keywords[] = {
         NULL
 };
 
-#define Python_syntax { \
-    Python_extensions, \
-    Python_keywords, \
-    "#", \
-    "'''", \
-    "'''", \
+#define PYTHON_syntax { \
+    Python_extensions,  \
+    Python_keywords,    \
+    "#",                \
+    "'''",              \
+    "'''",              \
     HL_HIGHLIGHT_STRINGS | HL_HIGHLIGHT_NUMBERS \
 }
 
